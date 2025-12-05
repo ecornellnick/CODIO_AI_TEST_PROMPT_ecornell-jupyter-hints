@@ -2,14 +2,14 @@
 // (ensures all global variables set in this extension cannot be referenced outside its scope)
 (async function(codioIDE, window) {
 
-  // register(id: unique button id, name: name of button visible in Coach, function: function to call when button is clicked) 
+  // Use a very specific button ID to avoid any clashes with other extensions
   codioIDE.coachBot.register(
-    "customHintsJupyter",
+    "CODIO_AI_TEST_PROMPT_customHintsJupyter",
     "Provide a hint on what to do next",
     onButtonPress
   )
 
-  // function called when I have a question button is pressed
+  // function called when the button is pressed
   async function onButtonPress() {
     try {
       // automatically collects all available context 
@@ -17,7 +17,7 @@
       
       // Check if jupyter context exists
       if (!context.jupyterContext || context.jupyterContext.length === 0) {
-        codioIDE.coachBot.write("No Jupyter notebook is currently open")
+        codioIDE.coachBot.write("No Jupyter notebook is currently open.")
         codioIDE.coachBot.showMenu()
         return
       }
@@ -40,7 +40,7 @@
       // Reference the Codio Prompt Management template by ID
       const userPrompt = "{% prompt 'CODIO_AI_TEST_PROMPT_JUPYTER_HINT_V1' %}"
 
-      // No instructional text here – everything lives in the managed prompt
+      // Ask CoachBot using the managed prompt.
       const result = await codioIDE.coachBot.ask({
         userPrompt: userPrompt,
         vars: {
@@ -48,16 +48,30 @@
         }
       })
 
-      // Handle the result
-      if (result && result.response) {
-        codioIDE.coachBot.write(result.response)
-      } else {
-        codioIDE.coachBot.write("I couldn't generate a hint right now.")
+      // In some Codio examples, ask() returns a string; in others, an object.
+      // Handle both but ONLY write when we actually have content.
+      let answer = null
+
+      if (typeof result === "string") {
+        answer = result
+      } else if (result && typeof result.response === "string") {
+        answer = result.response
       }
 
-    } catch (error) {
-      codioIDE.coachBot.write("An unexpected error occurred")
+      if (answer) {
+        codioIDE.coachBot.write(answer)
+      } else {
+        // Only show this if truly nothing came back.
+        codioIDE.coachBot.write("I couldn't generate a hint right now. Please try again.")
+      }
+
       codioIDE.coachBot.showMenu()
+
+    } catch (error) {
+      codioIDE.coachBot.write("An unexpected error occurred.")
+      codioIDE.coachBot.showMenu()
+      // Optional: log to browser console for debugging
+      console.error("CoachBot error in CODIO_AI_TEST_PROMPT_customHintsJupyter:", error)
     }
   }
 
