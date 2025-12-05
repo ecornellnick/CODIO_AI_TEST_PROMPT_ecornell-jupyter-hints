@@ -60,9 +60,6 @@
 
       if (answer) {
         codioIDE.coachBot.write(answer)
-      } else {
-        // Only show this if truly nothing came back.
-        codioIDE.coachBot.write("I couldn't generate a hint right now. Please try again.")
       }
 
       codioIDE.coachBot.showMenu()
