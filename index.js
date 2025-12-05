@@ -5,7 +5,7 @@
   // Use a very specific button ID to avoid any clashes with other extensions
   codioIDE.coachBot.register(
     "CODIO_AI_TEST_PROMPT_customHintsJupyter",
-    "Provide a hint on what to do next",
+    "CODIO_AI_TEST_PROMPT_Provide a hint on what to do next",
     onButtonPress
   )
 
