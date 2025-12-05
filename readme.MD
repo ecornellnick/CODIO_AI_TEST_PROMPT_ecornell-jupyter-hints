@@ -1,6 +1,7 @@
 TODO: Add details how this works in the new Codio AI Prompt
 
-# ecornell-jupyter-hints
+# CODIO_AI_TEST_PROMPT_ecornell-jupyter-hints
+
 
 This assistant mirrors the functionality of the native hints assistant with the following customizations:
 
